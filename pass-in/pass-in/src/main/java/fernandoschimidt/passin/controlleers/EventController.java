@@ -1,6 +1,8 @@
 package fernandoschimidt.passin.controlleers;
 
 import fernandoschimidt.passin.domain.event.Event;
+import fernandoschimidt.passin.dto.attendee.AttendeeIdDTO;
+import fernandoschimidt.passin.dto.attendee.AttendeeRequestDTO;
 import fernandoschimidt.passin.dto.attendee.AttendeesListReponseDTO;
 import fernandoschimidt.passin.dto.event.EventIDDTO;
 import fernandoschimidt.passin.dto.event.EventRequestDTO;
@@ -33,6 +35,15 @@ public class EventController {
         var uri = uriComponentsBuilder.path("/events/{id}").buildAndExpand(eventIDDTO.eventId()).toUri();
 
         return ResponseEntity.created(uri).body(eventIDDTO);
+    }
+
+    @PostMapping("/{eventId}/attendees")
+    public ResponseEntity<AttendeeIdDTO> registerParticipant(@PathVariable String eventId, @RequestBody AttendeeRequestDTO body, UriComponentsBuilder uriComponentsBuilder) {
+        AttendeeIdDTO attendeeIdDTO = this.eventService.registerAttendeeOnEvent(eventId, body);
+
+        var uri = uriComponentsBuilder.path("/attendees/{attendeeId}/badge").buildAndExpand(attendeeIdDTO.attendeeId()).toUri();
+
+        return ResponseEntity.created(uri).body(attendeeIdDTO);
     }
 
     @GetMapping("/attendees/{id}")
